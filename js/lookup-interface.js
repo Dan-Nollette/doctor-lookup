@@ -46,14 +46,16 @@ $(document).ready(function() {
       body.data.forEach(function(doctor){
         let fullName = doctor.profile.first_name + " " + doctor.profile.last_name + ", " + doctor.profile.title;
         let addresses = [];
+        let acceptingPatients;
         doctor.practices.forEach(function(practice){
           addresses.push([practice.visit_address.street, practice.visit_address.city, practice.visit_address.state])
         });
-        doctorsDetails.push([fullName, addresses]);
+        acceptingPatients = (doctor.practices[0].accepts_new_patients === true)
+        doctorsDetails.push([fullName, addresses, acceptingPatients]);
       });
       $('#doctorsOut').text(`The following Doctors match for that search by medical condition:`);
-      doctorsDetails.forEach(function(doctor) {
-        $('#doctorList').append(`<li><p>${doctor[0]}, </p><ul><li>${doctor[1][0]}</li> <li>${doctor[1][1]} </li><li>${doctor[1][2]}</li></ul></li>`);
+      doctorsDetails.forEach(function(doc) {
+        $('#doctorList').append(`<li><p>${doc[0]}, </p><ul><li>accepts new patients : ${doc[2].toString()}</li><br><li><p>${doc[1][0][0]}, </p><p>${doc[1][0][1]}, ${doc[1][0][2]}</p></li></ul></li><br>`);
       });
     }, function(error) {
       $('#showErrors').text(`There was an error processing your request: ${error.message}`);
@@ -84,13 +86,20 @@ $(document).ready(function() {
 
     promise.then(function(response) {
       let body = JSON.parse(response);
-      let doctorNames = [];
+      let doctorsDetails = [];
       body.data.forEach(function(doctor){
-        doctorNames.push(doctor.profile.first_name + " " + doctor.profile.last_name + " " + doctor.profile.title);
+        let fullName = doctor.profile.first_name + " " + doctor.profile.last_name + ", " + doctor.profile.title;
+        let addresses = [];
+        let acceptingPatients;
+        doctor.practices.forEach(function(practice){
+          addresses.push([practice.visit_address.street, practice.visit_address.city, practice.visit_address.state])
+        });
+        acceptingPatients = (doctor.practices[0].accepts_new_patients === true)
+        doctorsDetails.push([fullName, addresses, acceptingPatients]);
       });
       $('#doctorsOut').text(`The following Doctors match that name search term:`);
-      doctorNames.forEach(function(name) {
-        $('#doctorList').append(`<li>${name}</li>`);
+      doctorsDetails.forEach(function(doc) {
+        $('#doctorList').append(`<li><p>${doc[0]}, </p><ul><li>accepts new patients : ${doc[2].toString()}</li><br><li><p>${doc[1][0][0]}, </p><p>${doc[1][0][1]}, ${doc[1][0][2]}</p></li></ul></li><br>`);
       });
     }, function(error) {
       $('#showErrors').text(`There was an error processing your request: ${error.message}`);
