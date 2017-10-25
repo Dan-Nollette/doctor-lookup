@@ -3,7 +3,7 @@
   "description": "",
   "main": "gulpfile.js",
   "license": "ISC",
-  "homepage": "",
+  "homepage": "https://github.com/Dan-Nollette/doctor-lookup",
   "ignore": [
     "**/.*",
     "node_modules",
